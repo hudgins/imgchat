@@ -1,0 +1,20 @@
+{
+  "name": "wsservice",
+  "version": "0.0.1",
+  "description": "Client/Server wrappers for ws (Websockets library).",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo 'no tests' && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "github.rim.net/ahudgins/wsservice"
+  },
+  "keywords": [
+    "ws"
+  ],
+  "author": "Allan Hudgins",
+  "license": "None",
+  "dependencies": {
+  }
+}

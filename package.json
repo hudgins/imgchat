@@ -1,0 +1,17 @@
+{
+  "name": "image-chat",
+  "version": "0.0.1",
+  "description": "Chat system that shows top Google Image Search result alongside each message.",
+  "main": "image-chat.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Allan Hudgins",
+  "license": "MIT",
+  "dependencies": {
+    "express": "~3.4.7",
+    "superagent": "~0.16.0",
+    "replify": "~1.1.4",
+    "ws": "~0.4.31"
+  }
+}

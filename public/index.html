@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset='utf-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no'>
+  <meta name='apple-mobile-web-app-capable' content='yes' />
+  <meta name='apple-mobile-web-app-status-bar-style' content='black' />
+  <title>Image Chat</title>
+  <link href='/css/html5-doctor-reset-stylesheet.min.css' rel='stylesheet' />
+  <link href='/css/image-chat.css' rel='stylesheet' />
+  <link href='/images/apple-touch-startup-image-640x1096.png'
+        media='(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)'
+        rel='apple-touch-startup-image'>
+</head>
+
+<body>
+<div id='landscape'></div>
+
+<div id='add-to-home' style='display: none;'>
+  <p>Add this to your</p>
+  <p>Home Screen</p>
+  <p>tap</p>
+  <p>&darr;</p>
+</div>
+
+<div id='app'>
+  <div id='main'>
+    <div id='message-list'></div> 
+    <div id='message-compose'></div> 
+  </div>
+</div>
+
+<script id='add-to-home-script' type='text/javascript'>
+  if (/iPhone/.test(window.navigator.userAgent) && !window.navigator.standalone) {
+    document.getElementById('add-to-home').style.display = 'block';
+    document.getElementById('app').remove();
+    window.app = { abort: true };
+  } else {
+  }
+</script>
+
+<script id='message-list-template' type='text/template'>
+  <div class='list'></div>
+</script>
+<script id='message-template' type='text/template'>
+  <div>
+    <div class='username'><%= data.username %></div>
+    <div class='details'>
+      <div class='content'><%= data.content %></div>
+    </div>
+    <!-- <div class='timestamp'><%= data.timestamp %></div> -->
+    <div class='image-stuff'>
+      <div class='image-container'>
+        <img class='image' title='<%= data.image.title %>' src='<%= data.image.thumbnail.url %>'>
+      </div>
+    </div>
+  </div>
+  <div class='clearfix'></div>
+</script>
+<script id='image-detail-template' type='text/template'>
+  <div id='close'>Close</div>
+  <div class='image-stuff'>
+    <div class='image-container'>
+      <a target='_blank' href='<%= data.image.original.url %>'>
+        <img class='image' title='<%= data.image.title %>' src='<%= data.image.original.url %>'>
+      </a>
+    </div>
+    <div class='snippet'><%= data.image.snippet %></div>
+    <a class='link' target='_blank' href='<%= data.image.link %>'>Site</a>
+  </div>
+</script>
+<script id='user-activity-template' type='text/template'>
+  <div>
+    <div class='username'><%= data.username %></div>
+    <div class='content'><%= data.content %></div>
+    <!-- <div class='timestamp'><%= data.timestamp %></div> -->
+  </div>
+  <div class='clearfix'></div>
+</script>
+<script id='message-compose-template' type='text/template'>
+  <input type='text' id='content' autofocus></input>
+  <!-- <div id='btn-send'>Send</div> -->
+</script>
+
+<script src='//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js'></script>
+<script src='//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js'></script>
+<script src='//cdnjs.cloudflare.com/ajax/libs/backbone.js/1.1.0/backbone-min.js'></script>
+<script src='/js/libs/fastclick.min.js'></script>
+<script src='/js/libs/reconnecting-websocket.js'></script>
+<script src='/js/wsclient.js'></script>
+<script src='/js/image-chat-client.js'></script>
+
+</body>
+
+</html>

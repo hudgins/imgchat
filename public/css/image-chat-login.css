@@ -1,0 +1,38 @@
+
+body {
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; 
+  font-weight: 300;
+  font-size: 28px;
+  background: #454545;
+  color: #FFFFFF;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.clearfix {
+  clear: both;
+}
+
+body {
+}
+
+#login {
+  width: 100%;
+  padding-top: 20%;
+  width: 230px;
+  margin-left: auto;
+  margin-right: auto;
+}
+#username {
+  font-size: 24px;
+  width: 200px;
+}
+#btn-join {
+  background: #00A500;
+  border-radius: 2px;
+  text-align: center;
+  width: 20%;
+  padding: 10px;
+}
+
