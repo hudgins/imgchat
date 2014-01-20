@@ -159,28 +159,20 @@ function main() {
       className: 'message',
       template: compileTemplate('#message-template'),
       events: {
-        'load .image': 'showImage'
-      , 'click .image': 'showDetail'
+        'click .image': 'showDetail'
       },
       initialize: function() {
         this.listenTo(this.model, 'change', this.render);
         this.listenTo(this.model, 'change image', this.animate);
       },
       animate: function() {
-        console.log('animate');
         var img = this.$el.find('.image');
         img.addClass('hidden');
         var self = this;
         img.one('load', function() {
           self.el.scrollIntoView();
-          self.showImage();
           img.addClass('animate');
         });
-      },
-      showImage: function() {
-        // var self = this;
-        // var img = this.$el.find('.image');
-        // img.addClass('animate');
       },
       showDetail: function() {
         console.log('show detail');
@@ -197,8 +189,6 @@ function main() {
         if (this.model.get('mine')) {
           this.$el.addClass('mine');
         }
-        var self = this;
-        this.$el.find('img').one('load', function() { self.showImage(); });
         return this;
       },
     });
