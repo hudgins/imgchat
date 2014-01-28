@@ -9,6 +9,7 @@
   <title>Image Chat</title>
   <link href='/css/html5-doctor-reset-stylesheet.min.css' rel='stylesheet' />
   <link href='/css/image-chat-login.css' rel='stylesheet' />
+  <link href='/css/add-to-home.css' rel='stylesheet' />
   <link href='/images/apple-touch-startup-image-640x1096.png'
         media='(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)'
         rel='apple-touch-startup-image'>
@@ -19,6 +20,22 @@
     <input type='text' id='username' placeholder='your name' autofocus></input>
     <!-- <div id='btn-join'>Join</div> -->
   </div>
+
+  <div id='add-to-home' style='display: none;'>
+    <p>Add this to your</p>
+    <p>Home Screen</p>
+    <p>tap</p>
+    <p>&darr;</p>
+  </div>
+
+  <script id='add-to-home-script' type='text/javascript'>
+    if (/iPhone/.test(window.navigator.userAgent) && !window.navigator.standalone) {
+      document.getElementById('add-to-home').style.display = 'block';
+      document.getElementById('login').remove();
+      window.app = { abort: true };
+    }
+  </script>
+
 </body>
 
 <script type='application/javascript'>

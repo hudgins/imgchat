@@ -144,7 +144,7 @@ function main() {
         self.add(message);
       });
       app.socket.on('update', function(update) {
-        var message = self.get(update.id);
+        var message = self.get(update.messageId);
         message.set(update);
       });
       app.socket.on('user', function(message) {
@@ -241,7 +241,7 @@ function main() {
       template: compileTemplate('#message-compose-template'),
       events: {
         'click #btn-send': 'send'
-      , 'keyup': 'processKey'
+      , 'keypress': 'processKey'
       },
       processKey: function(e) {
         // TODO: fix accidental sending when hitting return to reload the page in Chrome
@@ -257,7 +257,6 @@ function main() {
         if (!content) return;
         var message = {
           username: app.username
-        , timestamp: new Date().getTime()
         , content: content
         };
         app.socket.send('message', message);

@@ -8,6 +8,7 @@ var replify = require('replify');
 var WebSocketServer = require('./deps/wsservice').WebSocketServer;
 var websocketServer = new WebSocketServer();
 
+var db = require('./lib/database');
 var google = require('./lib/google_image_search');
 
 var app = express();
@@ -43,15 +44,23 @@ app.get('/login/:username', function(request, response) {
   response.redirect('/');
 });
 
-http.createServer(app).listen(app.get('port'), function(){
-  console.log('Express server listening on port ' + app.get('port'));
+var MAX_RECENT = 20;
+var recentMessages = [];
+
+db.init(function(err) {
+  if (err) return console.error(err);
+  db.messages.find().sort({ timestamp: -1 }).limit(MAX_RECENT).toArray(function(err, messages) {
+    if (err) return console.error(err);
+    recentMessages = messages;
+    http.createServer(app).listen(app.get('port'), function(){
+      console.log('Express server listening on port ' + app.get('port'));
+    });
+  });
 });
 
 (function(server) {
   var users = {};
   var clients = [];
-  var messageHistory = [];
-  var messageId = 0;
 
   function userAction(user) {
     console.log('client action:', user);
@@ -61,32 +70,42 @@ http.createServer(app).listen(app.get('port'), function(){
         server.send(id, 'user', { action: user.action, content: user.username + ' joined.' });
       }
     });
-    server.send(user.clientId, 'messages', messageHistory);
+    server.send(user.clientId, 'messages', recentMessages);
   }
   function incomingMessage(message, client) {
     message.content = message.content.replace(/</g, '&lt;').replace(/>/g, '&gt;');
-    message.id = ++messageId;
-    messageHistory.push(message);
-    clients.forEach(function(id) {
-      server.send(id, 'message', message);
-    });
-    var userIp = client.upgradeReq.headers['x-forwarded-for'];
-    userIp = userIp || client.upgradeReq.connection.remoteAddress;
-    console.log('performing search with userIp, username:', userIp, message.username);
-    // TODO: keep message history, maybe in Mongo to demonstrate use of that
-    //       or just redis because we don't need persistence
-    google.getImage(message.content, userIp, message.username, function(err, image) {
-      if (err) console.warn(err);
-      if (image) {
-        var update = {
-          id: message.id
-        , image: image
-        };
-        clients.forEach(function(id) {
-          server.send(id, 'update', update);
-        });
-        message.image = image;
-      }
+    message.timestamp = Date.now();
+    recentMessages.push(message);
+    // only keep X recent messages
+    if (recentMessages.length > MAX_RECENT) {
+      recentMessages = recentMessages.slice(1);
+    }
+    db.messages.save(message, function(err, message) {
+      if (err) return console.error(err);
+
+      message.id = message._id;
+      clients.forEach(function(id) {
+        server.send(id, 'message', message);
+      });
+      var userIp = client.upgradeReq.headers['x-forwarded-for'];
+      userIp = userIp || client.upgradeReq.connection.remoteAddress;
+      console.log('performing search with userIp, username:', userIp, message.username);
+      google.getImage(message.content, userIp, message.username, function(err, image) {
+        if (err) console.warn(err);
+        if (image) {
+          var update = {
+            messageId: message.id
+          , image: image
+          };
+          clients.forEach(function(id) {
+            server.send(id, 'update', update);
+          });
+          message.image = image;
+          db.messages.save(message, function(err) {
+            if (err) console.error(err);
+          });
+        }
+      });
     });
   }
   function clientConnect(client) {
