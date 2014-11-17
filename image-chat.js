@@ -1,9 +1,11 @@
 
-var http = require('http');
 var path = require('path');
 
 var express = require('express');
-var replify = require('replify');
+// var favicon = require('serve-favicon');
+var logger = require('morgan');
+var cookieParser = require('cookie-parser');
+var bodyParser = require('body-parser');
 
 var WebSocketServer = require('./deps/wsservice').WebSocketServer;
 var websocketServer = new WebSocketServer();
@@ -13,23 +15,19 @@ var google = require('./lib/google_image_search');
 
 var app = express();
 
-// all environments
 app.set('port', process.env.PORT || 3000);
+// view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
-app.use(express.favicon());
-app.use(express.logger('dev'));
-app.use(express.cookieParser('funwithfractions'));
-app.use(express.json());
-app.use(express.urlencoded());
-app.use(express.methodOverride());
-app.use(app.router);
-app.use(express.static(path.join(__dirname, 'public')));
 
-// development only
-if ('development' == app.get('env')) {
-  app.use(express.errorHandler());
-}
+// uncomment after placing your favicon in /public
+//app.use(favicon(__dirname + '/public/favicon.ico'));
+app.use(logger('dev'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cookieParser());
+
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', function(request, response, next) {
   if (request.cookies['imgchat-username']) {
@@ -49,13 +47,44 @@ var recentMessages = [];
 
 db.init(function(err) {
   if (err) return console.error(err);
-  db.messages.find().sort({ timestamp: -1 }).limit(MAX_RECENT).toArray(function(err, messages) {
+  db.messages.find().sort({ timestamp: 1 }).limit(MAX_RECENT).toArray(function(err, messages) {
     if (err) return console.error(err);
     recentMessages = messages;
-    http.createServer(app).listen(app.get('port'), function(){
-      console.log('Express server listening on port ' + app.get('port'));
+    var server = app.listen(app.get('port'), function(){
+      console.log('Express server listening on port ' + server.address().port);
     });
   });
+});
+
+// catch 404 and forward to error handler
+app.use(function(req, res, next) {
+    var err = new Error('Not Found');
+    err.status = 404;
+    next(err);
+});
+
+// error handlers
+
+// development error handler
+// will print stacktrace
+if (app.get('env') === 'development') {
+    app.use(function(err, req, res, next) {
+        res.status(err.status || 500);
+        // res.render('error', {
+        //     message: err.message,
+        //     error: err
+        // });
+    });
+}
+
+// production error handler
+// no stacktraces leaked to user
+app.use(function(err, req, res, next) {
+    res.status(err.status || 500);
+    // res.render('error', {
+    //     message: err.message,
+    //     error: {}
+    // });
 });
 
 (function(server) {

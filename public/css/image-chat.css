@@ -11,14 +11,17 @@ body {
 body, html {
   width: 100%;
   height: 100%;
+  min-height: 100%;
 }
 
 .clearfix {
   clear: both;
 }
 
-#app {
+#app, #main, #message-list {
   width: 100%;
+  height: 100%;
+  min-height: 100%;
 }
 #message-compose {
   width: 100%;
@@ -47,11 +50,25 @@ form {
 
 .list {
   overflow-y: scroll;
-  -webkit-overflow-scrolling: touch;
-  height: 245px;
 }
-.list.expanded {
-  height: 505px;
+
+@media screen and (min-width: 800px) {
+  .list {
+    width: 600px;
+    height: 100%;
+    min-height: 100%;
+    margin: 0 auto;
+  }
+}
+
+@media screen and (max-width: 800px) {
+  .list {
+    -webkit-overflow-scrolling: touch;
+    height: 245px;
+  }
+  .list.expanded {
+    height: 505px;
+  }
 }
 
 .user-activity {
@@ -151,11 +168,11 @@ form {
   position: fixed;
   top: 0px;
   left: 0px;
-  width: 100%;
-  height: 100%;
+  width: 50%;
   /* color: white; */
   background-color: rgba(100, 200, 255, 0.5);
   transition: all 1000ms ease-in;
+  -webkit-transform: translate3d(0,0,0); /* turn on GPU */
 }
 .image-detail .snippet {
   width: 80%;
