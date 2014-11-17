@@ -27,8 +27,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-app.use(express.static(path.join(__dirname, 'public')));
-
 app.get('/', function(request, response, next) {
   if (request.cookies['imgchat-username']) {
     next();
@@ -41,6 +39,8 @@ app.get('/login/:username', function(request, response) {
   response.cookie('imgchat-username', request.params.username, { maxAge: 31536000000 || 'one year' });
   response.redirect('/');
 });
+
+app.use(express.static(path.join(__dirname, 'public')));
 
 var MAX_RECENT = 20;
 var recentMessages = [];
