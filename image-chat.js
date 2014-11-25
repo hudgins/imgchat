@@ -31,7 +31,9 @@ app.get('/', function(request, response, next) {
   if (request.cookies['imgchat-username']) {
     next();
   } else {
-    response.sendfile('./public/login.html');
+    response.sendFile(path.join(__dirname, 'public/login.html'), function(err) {
+      if (err) console.log('error serving login page:', err);
+    });
   }
 });
 
