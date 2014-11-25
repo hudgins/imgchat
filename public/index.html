@@ -37,7 +37,6 @@
     document.getElementById('add-to-home').style.display = 'block';
     document.getElementById('app').remove();
     window.app = { abort: true };
-  } else {
   }
 </script>
 
@@ -80,7 +79,7 @@
   <div class='clearfix'></div>
 </script>
 <script id='message-compose-template' type='text/template'>
-    <input type='text' id='content' autofocus></input>
+    <input type='text' id='content' placeholder="hit 'return' to send, tap/click images for details" autofocus></input>
   <!-- <div id='btn-send'>Send</div> -->
 </script>
 

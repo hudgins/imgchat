@@ -31,18 +31,16 @@ app.get('/', function(request, response, next) {
   if (request.cookies['imgchat-username']) {
     next();
   } else {
-    response.sendFile(path.join(__dirname, 'public/login.html'), function(err) {
-      if (err) console.log('error serving login page:', err);
-    });
+    response.redirect('/login.html')
   }
 });
+
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/login/:username', function(request, response) {
   response.cookie('imgchat-username', request.params.username, { maxAge: 31536000000 || 'one year' });
   response.redirect('/');
 });
-
-app.use(express.static(path.join(__dirname, 'public')));
 
 var MAX_RECENT = 20;
 var recentMessages = [];
@@ -94,7 +92,6 @@ app.use(function(err, req, res, next) {
   var clients = [];
 
   function userAction(user) {
-    console.log('client action:', user);
     if (user.username) users[user.clientId] = user.username;
     clients.forEach(function(id) {
       if (id !== user.clientId) {
